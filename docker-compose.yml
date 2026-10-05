@@ -9,17 +9,22 @@ services:
     environment:
       DB_HOST: db
       DB_NAME: cyber_security
-      DB_USER: root
-      DB_PASS: saya123
+      DB_USER: websaya
+      DB_PASS: websaya_lab
+      ADMIN_USER: admin
+      ADMIN_PASS: change-this-password
   db:
     image: mysql:8.4
     environment:
-      MYSQL_ROOT_PASSWORD: saya123
+      MYSQL_ROOT_PASSWORD: root-lab-password
       MYSQL_DATABASE: cyber_security
+      MYSQL_USER: websaya
+      MYSQL_PASSWORD: websaya_lab
     volumes:
       - websaya_db:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -psaya123 --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -proot-lab-password --silent"]
       interval: 5s
       timeout: 5s
       retries: 20
