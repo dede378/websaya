@@ -1,5 +1,7 @@
 <?php
 require __DIR__.'/config.php';
+mysqli_query($conn,"CREATE TABLE IF NOT EXISTS pengguna (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL, nama_lengkap VARCHAR(100) NOT NULL, is_admin TINYINT(1) NOT NULL DEFAULT 0)");
+mysqli_query($conn,"CREATE TABLE IF NOT EXISTS percobaan_masuk (id INT AUTO_INCREMENT PRIMARY KEY, ip VARCHAR(45) NOT NULL, waktu DATETIME NOT NULL, berhasil TINYINT(1) NOT NULL DEFAULT 0)");
 if(isset($_SESSION['user_id'])){header('Location:index.php');exit;}
 $ip=$_SERVER['REMOTE_ADDR']??'127.0.0.1';
 $s=mysqli_prepare($conn,"SELECT COUNT(*) FROM percobaan_masuk WHERE ip=? AND waktu>NOW()-INTERVAL 5 MINUTE AND berhasil=0");
@@ -18,4 +20,4 @@ if($_SERVER['REQUEST_METHOD']==='POST'&&!$locked){
  }
 }
 if($locked)$message='Terlalu banyak percobaan gagal. Tunggu 5 menit.';
-?><!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>WebSaya Login</title><style>body{font-family:system-ui;background:#0b1020;color:#e7ecff;display:grid;place-items:center;min-height:100vh}.box{width:min(360px,90%);background:#121a33;padding:25px;border:1px solid #29345e;border-radius:12px}input,button{width:100%;padding:12px;margin:7px 0;box-sizing:border-box}a{color:#8eb4ff}</style></head><body><div class="box"><h1>🔐 WebSaya</h1><?php if($message):?><p><?=h($message)?></p><?php endif;?><form method="post"><input type="hidden" name="csrf_token" value="<?=h($_SESSION['csrf_token'])?>"><input name="username" placeholder="Username" required><input name="password" type="password" placeholder="Password" required><button <?= $locked?'disabled':'' ?>>Masuk</button></form><p><a href="daftar.php">Daftar akun</a></p><small>Gunakan endpoint lab khusus untuk pengujian vulnerability.</small></div></body></html>
+?><!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>WebSaya Login</title></head><body><main><h1>🔐 WebSaya</h1><?php if($message):?><p><?=h($message)?></p><?php endif;?><form method="post"><input type="hidden" name="csrf_token" value="<?=h($_SESSION['csrf_token'])?>"><input name="username" placeholder="Username" required><input name="password" type="password" placeholder="Password" required><button <?= $locked?'disabled':'' ?>>Masuk</button></form><p><a href="daftar.php">Daftar akun</a></p></main></body></html>
